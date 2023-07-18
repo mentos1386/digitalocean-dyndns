@@ -21,14 +21,14 @@ Pick one of the options below using the following settings:
 ### Docker (Recommended)
 
 ```
-$ docker pull tunix/digitalocean-dyndns
+$ docker pull code.tjo.space/mentos1386/digitalocean-dyndns:main
 $ docker run -d --name dyndns \
     -e DIGITALOCEAN_TOKEN="your_token_here" \
     -e DOMAIN="yourdomain.com" \
     -e NAME="subdomain" \
     -e SLEEP_INTERVAL=2 \
     -e REMOVE_DUPLICATES="true" \
-    tunix/digitalocean-dyndns
+    code.tjo.space/mentos1386/digitalocean-dyndns:main
 ```
 
 ### Manual
