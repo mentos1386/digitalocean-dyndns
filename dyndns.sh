@@ -6,8 +6,9 @@ sleep_interval=${SLEEP_INTERVAL:-300}
 remove_duplicates=${REMOVE_DUPLICATES:-"false"}
 
 # Only services with ipv6 supported are listed here.
+# And are not using cloudflare or similar services
+# that may block requests from this script.
 services=(
-    "ifconfig.co"
     "ifconfig.io"
 )
 
@@ -96,19 +97,22 @@ do
     do
         echo "Trying with $service..."
 
-        ipv4="$(curl -4 -s -f $service || echo "")"
-        ipv6="$(curl -6 -s -f $service || echo "")"
+        ipv4="$(curl -4 -s -f --connect-timeout=2 $service || echo "")"
+        ipv6="$(curl -6 -s -f --connect-timeout=2 $service || echo "")"
 
-        test -n "$ipv4$ipv6" && break
+        if [[ -n "$ipv4$ipv6" ]]
+        then
+            break
+        else
+            echo "Failed to retrieve IP from $service"
+        fi
     done
-
-    echo "Found IPv4 address $ipv4"
-    echo "Found IPv6 address $ipv6"
 
     if [[ -z $ipv4 ]]
     then
         echo "IPv4 wasn't retrieved within allowed interval. Will try $sleep_interval seconds later.."
     else
+      echo "Found IPv4 address $ipv4"
       configure_record $ipv4 "A"
     fi
 
@@ -116,6 +120,7 @@ do
     then
         echo "IPv6 wasn't retrieved within allowed interval. Will try $sleep_interval seconds later.."
     else
+      echo "Found IPv6 address $ipv6"
       configure_record $ipv6 "AAAA"
     fi 
 
