@@ -56,7 +56,7 @@ configure_record() {
   # re-enable glob expansion
   set +f
 
-  data="{\"type\": \"A\", \"name\": \"$sub\", \"data\": \"$ip\"}"
+  data="{\"type\": \"$type\", \"name\": \"$sub\", \"data\": \"$ip\"}"
   url="$dns_list/$record_id"
 
   if [[ -z $record_id ]]; then
