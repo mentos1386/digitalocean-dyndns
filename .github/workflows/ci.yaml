@@ -29,7 +29,7 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: https://github.com/docker/metadata-action@v4
+        uses: docker/metadata-action@v4
         with:
           images: code.tjo.space/mentos1386/digitalocean-dyndns
           # generate Docker tags based on the following events/attributes
@@ -44,6 +44,8 @@ jobs:
 
       - name: Build and push
         uses: docker/build-push-action@v4
+        env:
+          ACTIONS_RUNTIME_TOKEN: ''
         with:
           context: .
           push: true
