@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -exuo pipefail
 
 api_host="https://api.digitalocean.com/v2"
 sleep_interval=${SLEEP_INTERVAL:-300}
@@ -85,17 +85,19 @@ configure_record() {
   done
 }
 
-while ( true ); do
+while ( true )
+do
     domain_records=$(curl -s -X GET \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" \
         $dns_list"?per_page=200")
 
-    for service in ${services[@]}; do
+    for service in ${services[@]}
+    do
         echo "Trying with $service..."
 
-        ipv4="$(curl -4 -s -f $service)"
-        ipv6="$(curl -6 -s -f $service)"
+        ipv4="$(curl -4 -s -f $service || echo "")"
+        ipv6="$(curl -6 -s -f $service || echo "")"
 
         test -n "$ipv4$ipv6" && break
     done
@@ -103,13 +105,15 @@ while ( true ); do
     echo "Found IPv4 address $ipv4"
     echo "Found IPv6 address $ipv6"
 
-    if [[ -z $ipv4 ]]; then
+    if [[ -z $ipv4 ]]
+    then
         echo "IPv4 wasn't retrieved within allowed interval. Will try $sleep_interval seconds later.."
     else
       configure_record $ipv4 "A"
     fi
 
-    if [[ -z $ipv6 ]]; then
+    if [[ -z $ipv6 ]]
+    then
         echo "IPv6 wasn't retrieved within allowed interval. Will try $sleep_interval seconds later.."
     else
       configure_record $ipv6 "AAAA"
