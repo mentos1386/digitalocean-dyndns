@@ -97,8 +97,8 @@ do
     do
         echo "Trying with $service..."
 
-        ipv4="$(curl -4 -s -f --connect-timeout=2 $service || echo "")"
-        ipv6="$(curl -6 -s -f --connect-timeout=2 $service || echo "")"
+        ipv4="$(curl -4 -s -f --connect-timeout 2 $service || echo "")"
+        ipv6="$(curl -6 -s -f --connect-timeout 2 $service || echo "")"
 
         if [[ -n "$ipv4$ipv6" ]]
         then
